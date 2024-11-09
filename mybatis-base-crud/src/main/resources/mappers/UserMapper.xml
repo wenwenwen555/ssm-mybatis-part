@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace等于mapper接口类的全限定名,这样实现对应 -->
+<mapper namespace="com.kun.mapper.UserMapper">
+    <!-- 定义一个插入语句，并获取主键值 -->
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO websites(name, url,alexa,country)
+        VALUES(#{name}, #{url},#{alexa},#{country})
+    </insert>
+
+    <update id="update">
+        UPDATE websites SET id=#{id}, url=#{url},alexa=#{alexa},country=#{country}
+        WHERE id=#{id}
+    </update>
+
+    <delete id="delete">
+        DELETE FROM websites WHERE id=#{id}
+    </delete>
+
+    <!-- resultType使用user别名，稍后需要配置！-->
+    <select id="selectById" resultType="user">
+        SELECT * FROM websites WHERE id=#{id}
+    </select>
+
+    <!-- resultType返回值类型为集合，所以只写范型即可！ -->
+    <select id="selectAll" resultType="user">
+        SELECT * FROM websites
+    </select>
+
+    <!-- List<Employee> selectEmployeeByCondition(Employee employee); -->
+    <select id="selectEmployeeByCondition" resultType="employee">
+        select emp_id,emp_name,emp_salary from t_emp
+        <!-- where标签会自动去掉“标签体内前面多余的and/or”,自动为符合条件的if内的语句添加where -->
+        <where>
+            <!-- 使用if标签，让我们可以有选择的加入SQL语句的片段。这个SQL语句片段是否要加入整个SQL语句，就看if标签判断的结果是否为true -->
+            <!-- 在if标签的test属性中，可以访问实体类的属性，不可以访问数据库表的字段 -->
+            <if test="empName != null">
+                <!-- 在if标签内部，需要访问接口的参数时还是正常写#{} -->
+                or emp_name=#{empName}
+            </if>
+            <if test="empSalary &gt; 2000"><!-- &gt; == > , &lt; == < -->
+                or emp_salary>#{empSalary}
+            </if>
+            <!--
+        第一种情况：所有条件都满足 WHERE emp_name=? or emp_salary>?
+        第二种情况：部分条件满足 WHERE emp_salary>?
+        第三种情况：所有条件都不满足 没有where子句
+             -->
+        </where>
+    </select>
+</mapper>

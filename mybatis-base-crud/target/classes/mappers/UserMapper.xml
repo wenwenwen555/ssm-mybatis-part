@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace等于mapper接口类的全限定名,这样实现对应 -->
+<mapper namespace="com.kun.mapper.UserMapper">
+    <!-- 定义一个插入语句，并获取主键值 -->
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO websites(name, url,alexa,country)
+        VALUES(#{name}, #{url},#{alexa},#{country})
+    </insert>
+
+    <update id="update">
+        UPDATE websites SET id=#{id}, url=#{url},alexa=#{alexa},country=#{country}
+        WHERE id=#{id}
+    </update>
+
+    <delete id="delete">
+        DELETE FROM websites WHERE id=#{id}
+    </delete>
+
+    <!-- resultType使用user别名，稍后需要配置！-->
+    <select id="selectById" resultType="user">
+        SELECT * FROM websites WHERE id=#{id}
+    </select>
+
+    <!-- resultType返回值类型为集合，所以只写范型即可！ -->
+    <select id="selectAll" resultType="user">
+        SELECT * FROM websites
+    </select>
+
+</mapper>
